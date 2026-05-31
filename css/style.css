@@ -1,18 +1,14 @@
-/* ==========================
-   GUVI INSPIRED THEME
-========================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root{
-    --primary:#0B5ED7;
-    --primary-dark:#084298;
-    --success:#20C997;
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#20c997;
     --success-dark:#198754;
-    --light:#F8FAFC;
-    --dark:#1F2937;
-    --gray:#6B7280;
-    --border:#D1D5DB;
+    --dark:#1f2937;
+    --gray:#6b7280;
+    --border:#d1d5db;
+    --bg:#eef2f7;
 }
 
 *{
@@ -22,21 +18,58 @@
 }
 
 body{
+    min-height:100vh;
+    background:var(--bg);
+    font-family:'Poppins',sans-serif;
+}
 
-    background:linear-gradient(135deg,#f8fafc,#eef5ff);
+/* ==========================
+   NAVBAR
+========================== */
+
+.custom-nav .container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar-brand{
+    color:white !important;
+    font-weight:600;
+    font-size:1.2rem;
+}
+
+/* ==========================
+   PAGE WRAPPER
+========================== */
+
+.page-wrapper{
+    min-height: calc(100vh - 70px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
 /* ==========================
    CARD
 ========================== */
+.login-card{
+    max-width:500px;
+}
 
 .main-card{
+    width:100%;
+    max-width:520px;
     background:white;
     border:none;
-    border-radius:25px;
-    padding:50px;
-    box-shadow:
-        0 20px 60px rgba(15,23,42,12);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,.10);
+}
+
+.profile-card{
+    max-width:850px !important;
 }
 
 /* ==========================
@@ -44,13 +77,41 @@ body{
 ========================== */
 
 .page-title{
-    color:var(--primary);
+    text-align:center;
+    font-size:3rem;
     font-weight:700;
+    color:var(--primary);
+    margin-bottom:5px;
+    line-height:1.1;
 }
 
 .page-subtitle{
+    text-align:center;
     color:var(--gray);
-    font-size:14px;
+    font-size:16px;
+    margin-bottom:25px;
+}
+
+/* ==========================
+   PROFILE HEADER
+========================== */
+
+.profile-header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.profile-name{
+    font-size:28px;
+    font-weight:600;
+    color:var(--dark);
+    margin-bottom:5px;
+}
+
+.profile-email{
+    font-size:15px;
+    color:var(--gray);
+    margin-bottom:20px;
 }
 
 /* ==========================
@@ -58,31 +119,38 @@ body{
 ========================== */
 
 .form-control{
+    height:48px;
     border-radius:12px !important;
-    padding:12px !important;
     border:1px solid var(--border) !important;
+    margin-bottom:14px;
+    padding:10px 14px !important;
 }
 
 .form-control:focus{
     border-color:var(--primary) !important;
-    box-shadow:
-        0 0 0 0.2rem rgba(11,94,215,.15) !important;
+    box-shadow:0 0 0 .15rem rgba(37,99,235,.15) !important;
 }
-.form-control,
-textarea{
-    background:white!important;
+
+textarea.form-control{
+    height:100px !important;
+    resize:none;
 }
 
 /* ==========================
    BUTTONS
 ========================== */
 
+.btn{
+    height:48px;
+    border-radius:12px !important;
+    font-weight:600;
+    font-size:16px;
+}
+
 .btn-login{
     background:var(--primary);
+    color:white;
     border:none;
-    border-radius:12px;
-    padding:12px;
-    font-weight:600;
 }
 
 .btn-login:hover{
@@ -90,23 +158,19 @@ textarea{
 }
 
 .btn-register{
-    background:var(--success);
+    background:var(--primary);
+    color:white;
     border:none;
-    border-radius:12px;
-    padding:12px;
-    font-weight:600;
 }
 
 .btn-register:hover{
-    background:var(--success-dark);
+    background:var(--primary-dark);
 }
 
 .btn-save{
     background:var(--success);
+    color:white;
     border:none;
-    border-radius:12px;
-    padding:12px;
-    font-weight:600;
 }
 
 .btn-save:hover{
@@ -114,9 +178,26 @@ textarea{
 }
 
 .btn-logout{
+    background:#212529;
+    color:white;
+    border:none;
+    margin-top:15px;
+}
+
+.btn-logout:hover{
+    background:#000;
+}
+
+/* ==========================
+   USER INFO BOX
+========================== */
+
+.user-box{
+    background:#e7f1ff;
+    border-left:4px solid var(--primary);
+    padding:15px;
     border-radius:12px;
-    padding:12px;
-    font-weight:600;
+    margin-bottom:20px;
 }
 
 /* ==========================
@@ -124,28 +205,10 @@ textarea{
 ========================== */
 
 .logo{
-    width:180px;
-    margin-bottom:15px;
-}
-
-/* ==========================
-   PROFILE EMAIL
-========================== */
-
-.user-box{
-    background:#e7f1ff;
-    border-left:5px solid var(--primary);
-    padding:15px;
-    border-radius:12px;
-    margin-bottom:20px;
-}
-
-/* ==========================
-   SUCCESS MESSAGE
-========================== */
-
-.alert-success{
-    border-radius:12px;
+    width:70px;
+    height:70px;
+    display:block;
+    margin:0 auto 15px;
 }
 
 /* ==========================
@@ -158,8 +221,21 @@ textarea{
         padding:25px;
     }
 
+    .page-title{
+        font-size:2.2rem;
+    }
+
+    .profile-name{
+        font-size:22px;
+    }
+
     .logo{
         width:140px;
     }
+}
 
+html,
+body{
+    height:100%;
+    overflow:hidden;
 }
