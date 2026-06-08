@@ -1,48 +1,46 @@
-$("#loginBtn").click(function () {
-    let email = $("#email").val().trim();
-    let password = $("#password").val().trim();
-    if (email == "" || password == "") {
-        $("#message").html(
-            '<div class="alert alert-danger">All Fields Required</div>'
-        );
-        return;
-    }
-    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        $("#message").html(
-            '<div class="alert alert-danger">Enter Valid Email</div>'
-        );
-        return;
-    }
-    if (password.length < 6) {
-        $("#message").html(
-            '<div class="alert alert-danger">Password must contain minimum 6 characters</div>'
-        );
-        return;
-    }
-    $.ajax({
-        url: "php/login.php",
-        type: "POST",
-        data: {
-            email: email,
-            password: password
-        },
-      success:function(response){
+$(document).ready(function(){
+    $("#loginBtn").click(function(e){
+        e.preventDefault();
 
-    let data = JSON.parse(response);
+        let email = $("#email").val().trim();
+        let password = $("#password").val().trim();
 
-    if(data.status === "success"){
+        if (email === '' || password === '') {
+            alert("Please enter both email and password.");
+            return;
+        }
 
-        localStorage.setItem("user", data.email);
-        localStorage.setItem("name", data.name);
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
 
-        window.location.href = "profile.html";
-
-    }else{
-
-        alert("Invalid Credentials");
-
-    }
-}
+        $.ajax({
+            url: "php/login.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                email: email,
+                password: password
+            },
+            success: function(data){
+                if (data.status === "success") {
+                    // Store authentication state in localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', data.email);
+                    localStorage.setItem('userName', data.name);
+                    if (data.userId) {
+                        localStorage.setItem('userId', data.userId);
+                    }
+                    window.location.href = "profile.html";
+                } else {
+                    alert(data.message || "Invalid credentials");
+                }
+            },
+            error: function(xhr, status, error){
+                console.log("AJAX ERROR", xhr.responseText || error);
+                alert("Unable to complete login request. Please try again.");
+            }
+        });
     });
 });

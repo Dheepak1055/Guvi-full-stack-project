@@ -1,14 +1,9 @@
 <?php
-
-require '../vendor/autoload.php';
-
-$email = $_POST['email'] ?? '';
-
-$redis = new Predis\Client([
-    'scheme' => 'tcp',
-    'host'   => '127.0.0.1',
-    'port'   => 6379,
+require 'config.php';
+startRedisSession();
+destroyRedisSession();
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode([
+    "status" => "success"
 ]);
-
-$redis->del(["session_" . $email]);
-echo "Logout Success";
+?>

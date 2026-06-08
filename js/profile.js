@@ -1,63 +1,126 @@
-let user = localStorage.getItem("user");
-if(user == null){
-    window.location.href = "login.html";
+let email = "";
+let name = "";
+
+// Check localStorage for authentication
+function checkAuthentication() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const userEmail = localStorage.getItem('userEmail');
+    const userName = localStorage.getItem('userName');
+    
+    if (isLoggedIn !== 'true' || !userEmail || !userName) {
+        // Not logged in, redirect to login page
+        window.location.href = "login.html";
+        return false;
+    }
+    
+    email = userEmail;
+    name = userName;
+    return true;
 }
+
 $(document).ready(function(){
-    let email = localStorage.getItem("user");
-    let name = localStorage.getItem("name");
-    document.getElementById("userName").innerHTML = name;
-    document.getElementById("userEmail").innerHTML = email;
-});
-if(user == null){
-    window.location.href = "login.html";
-}
-$(document).ready(function(){
-    let email = localStorage.getItem("user");
-    let name = localStorage.getItem("name");
+    // Define loadProfileData function first
+    function loadProfileData() {
+        $.ajax({
+            url: "php/get_profile.php",
+            type: "GET",
+            dataType: "json",
+            data: {
+                email: email
+            },
+            success: function(data) {
+                if (data.status === "success") {
+                    $("#age").val(data.age || "");
+                    $("#dob").val(data.dob || "");
+                    $("#contact").val(data.contact || "");
+                    $("#bio").val(data.bio || "");
+                } else {
+                    console.log("PROFILE LOAD FAILED", data.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("PROFILE LOAD ERROR", xhr.responseText || error);
+            }
+        });
+    }
+
+    // Check authentication from localStorage
+    if (!checkAuthentication()) {
+        return;
+    }
+    
+    // Display user information
     $("#userEmail").text(email);
     $("#userName").text(name);
+    loadProfileData();
+
     $("#saveProfileBtn").click(function(){
-        let age = $("#age").val();
-        let contact = $("#contact").val();
-        let bio = $("#bio").val();
-        let dob = $("#dob").val();
+        let age = $("#age").val().trim();
+        let contact = $("#contact").val().trim();
+        let bio = $("#bio").val().trim();
+        let dob = $("#dob").val().trim();
+
+        if (age === '') {
+            alert("Age is required.");
+            return;
+        }
+
+        if (!/^[0-9]+$/.test(age) || Number(age) < 18 || Number(age) > 100) {
+            alert("Age must be a number between 18 and 100.");
+            return;
+        }
+
+        if (contact === '') {
+            alert("Contact is required.");
+            return;
+        }
+
+        if (!/^[0-9]{10}$/.test(contact)) {
+            alert("Contact must be exactly 10 digits.");
+            return;
+        }
+
+        if (bio.length > 200) {
+            alert("Bio cannot exceed 200 characters.");
+            return;
+        }
+
         $.ajax({
-            url:"php/save_profile.php",
-            type:"POST",
-            data:{
-                email:email,
-                age:age,
-                dob:dob,
-                contact:contact,
-                bio:bio
+            url: "php/save_profile.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                email: email,
+                age: age,
+                dob: dob,
+                contact: contact,
+                bio: bio
             },
-            success:function(response){
+            success: function(data){
+                let alertClass = data.status === "success" ? "alert-success" : "alert-danger";
                 $("#profileMessage").html(
-                    '<div class="alert alert-success">'+
-                    response+
+                    '<div class="alert ' + alertClass + '">' +
+                    (data.message || "Unable to save profile") +
                     '</div>'
                 );
             },
-            error:function(){
-                alert("AJAX ERROR");
-            }
-        });
-    });
-    $("#logoutBtn").click(function(){
-        $.ajax({
-            url:"php/logout.php",
-            type:"POST",
-            data:{
-                email:email
-            },
-            success:function(response){
-                localStorage.removeItem("user");
-                localStorage.removeItem("name");
-                window.location.href="login.html";
-            },
-            error:function(xhr,status,error){
+            error: function(xhr, status, error){
+                console.log("PROFILE SAVE ERROR", xhr.responseText || error);
+                $("#profileMessage").html(
+                    '<div class="alert alert-danger">Unable to save profile. Please try again.</div>'
+                );
             }
         });
     });
 
+    $("#logoutBtn").click(function(){
+        // Clear all localStorage authentication data
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userId');
+        
+        // Redirect to login page
+        window.location.href = "login.html";
+    });
 });
